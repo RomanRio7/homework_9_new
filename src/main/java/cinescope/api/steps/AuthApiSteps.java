@@ -3,6 +3,7 @@ package cinescope.api.steps;
 import cinescope.api.client.AuthClient;
 import cinescope.api.dto.LoginRequest;
 import cinescope.api.dto.LoginResponse;
+import io.qameta.allure.Allure;
 import io.restassured.response.Response;
 
 public class AuthApiSteps {
@@ -10,6 +11,8 @@ public class AuthApiSteps {
     private final AuthClient authClient = new AuthClient();
 
     public String loginAndGetToken(String email, String password) {
+        Allure.step("Логинимся email=" + email);
+
         LoginRequest request = LoginRequest.builder()
                 .email(email)
                 .password(password)
@@ -26,6 +29,8 @@ public class AuthApiSteps {
     }
 
     public String loginAsAdmin() {
+        Allure.step("Логинимся как админ");
+
         String email = "roman_sarsengaliev@mail.ru";
         String password = "baXfo8-nyptyc-jicxob";
         return loginAndGetToken(email, password);

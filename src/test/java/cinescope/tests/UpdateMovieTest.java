@@ -4,10 +4,13 @@ import cinescope.api.dto.CreateMovieRequest;
 import cinescope.api.dto.MovieResponse;
 import cinescope.api.steps.AuthApiSteps;
 import cinescope.api.steps.MovieApiSteps;
+import cinescope.db.model.MovieDbModel;
 import cinescope.db.steps.MovieDbSteps;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,37 +27,46 @@ public class UpdateMovieTest {
     @DisplayName("PATCH /movies/{id} — успешное обновление фильма + проверка в БД")
     void updateMoviePositive() {
         String token = authSteps.loginAsAdmin();
+        MovieResponse created = null;
 
-        // создаём
-        CreateMovieRequest request = new CreateMovieRequest();
-        request.setName("Movie update " + System.currentTimeMillis());
-        request.setPrice(170.0);
-        request.setDescription("Before update");
-        request.setLocation("SPB");
-        request.setPublished(true);
-        request.setGenreId(1);
+        try {
+            CreateMovieRequest request = CreateMovieRequest.builder()
+                    .name("Movie update " + System.currentTimeMillis())
+                    .price(170.0)
+                    .description("Before update")
+                    .location("SPB")
+                    .published(true)
+                    .genreId(1)
+                    .build();
 
-        MovieResponse created = movieApiSteps.createMovie(token, request, 201);
+            created = movieApiSteps.createMovie(token, request, 201);
 
-        // тело для PATCH
-        var patchBody = new java.util.HashMap<String, Object>();
-        String newName = "Movie updated " + System.currentTimeMillis();
-        patchBody.put("name", newName);
-        patchBody.put("price", 190.0);
-        patchBody.put("description", "After update");
+            HashMap<String, Object> patchBody = new HashMap<>();
+            String newName = "Movie updated " + System.currentTimeMillis();
+            patchBody.put("name", newName);
+            patchBody.put("price", 190.0);
+            patchBody.put("description", "After update");
 
-        MovieResponse updated = movieApiSteps.patchMovie(token, created.getId(), patchBody, 200);
+            MovieResponse updated = movieApiSteps.patchMovie(token, created.getId(), patchBody, 200);
 
-        // проверки по API
-        assertThat(updated.getId()).isEqualTo(created.getId());
-        assertThat(updated.getName()).isEqualTo(newName);
-        assertThat(updated.getPrice()).isEqualTo(190.0);
-        assertThat(updated.getDescription()).isEqualTo("After update");
+            assertThat(updated.getId()).isEqualTo(created.getId());
+            assertThat(updated.getName()).isEqualTo(newName);
+            assertThat(updated.getPrice()).isEqualTo(190.0);
+            assertThat(updated.getDescription()).isEqualTo("After update");
 
-        // 🔥 проверки в БД
-        movieDbSteps.assertUpdatedField(created.getId(), "name", newName);
-        movieDbSteps.assertUpdatedField(created.getId(), "price", 190.0);
-        movieDbSteps.assertUpdatedField(created.getId(), "description", "After update");
+            MovieDbModel dbMovie = movieDbSteps.getMovieById(created.getId());
+            assertThat(dbMovie).isNotNull();
+            assertThat(dbMovie.getName()).isEqualTo(newName);
+            assertThat(dbMovie.getPrice()).isEqualTo(190.0);
+            assertThat(dbMovie.getDescription()).isEqualTo("After update");
+        } finally {
+            if (created != null) {
+                try {
+                    movieApiSteps.deleteMovie(token, created.getId(), 200);
+                } catch (AssertionError | Exception ignored) {
+                }
+            }
+        }
     }
 
     @Test

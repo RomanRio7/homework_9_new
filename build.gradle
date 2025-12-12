@@ -32,7 +32,9 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.26.3'
     testImplementation 'org.hamcrest:hamcrest:2.2'
 
+    // Allure
     testImplementation 'io.qameta.allure:allure-junit5:2.29.0'
+    implementation 'io.qameta.allure:allure-java-commons:2.29.0'
 }
 
 test {
@@ -42,6 +44,10 @@ test {
 
 allure {
     version = '2.29.0'
+    autoconfigure = true
+
+    aspectjweaver = false
+
     useJUnit5 {
         version = '2.29.0'
     }

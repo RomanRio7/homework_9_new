@@ -4,10 +4,13 @@ import cinescope.api.dto.CreateMovieRequest;
 import cinescope.api.dto.MovieResponse;
 import cinescope.api.steps.AuthApiSteps;
 import cinescope.api.steps.MovieApiSteps;
+import cinescope.db.model.MovieDbModel;
 import cinescope.db.steps.MovieDbSteps;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Epic("Cinescope API")
 @Feature("Movies")
@@ -23,19 +26,35 @@ public class CreateMovieTest {
     void createMoviePositive() {
         String token = authSteps.loginAsAdmin();
 
-        CreateMovieRequest request = new CreateMovieRequest();
-        request.setName("Movie " + System.currentTimeMillis());
-        request.setImageUrl("https://image.url");
-        request.setPrice(200.0);
-        request.setDescription("Test movie");
-        request.setLocation("MSK");
-        request.setPublished(true);
-        request.setGenreId(1);
+        CreateMovieRequest request = CreateMovieRequest.builder()
+                .name("Movie " + System.currentTimeMillis())
+                .imageUrl("https://image.url")
+                .price(200.0)
+                .description("Test movie")
+                .location("MSK")
+                .published(true)
+                .genreId(1)
+                .build();
 
-        MovieResponse response =
-                movieApiSteps.createMovie(token, request, 201);
+        MovieResponse response = movieApiSteps.createMovie(token, request, 201);
 
-        movieDbSteps.assertMovieExists(response.getId());
+        try {
+            MovieDbModel dbMovie = movieDbSteps.getMovieById(response.getId());
+
+            assertThat(dbMovie)
+                    .as("Фильм должен существовать в БД")
+                    .isNotNull();
+
+            assertThat(dbMovie.getId()).isEqualTo(response.getId());
+            assertThat(dbMovie.getName()).isEqualTo(request.getName());
+            assertThat(dbMovie.getPrice()).isEqualTo(request.getPrice());
+            assertThat(dbMovie.getDescription()).isEqualTo(request.getDescription());
+            assertThat(dbMovie.getLocation()).isEqualTo(request.getLocation());
+            assertThat(dbMovie.getPublished()).isEqualTo(request.getPublished());
+            assertThat(dbMovie.getGenreId()).isEqualTo(request.getGenreId());
+        } finally {
+            movieApiSteps.deleteMovie(token, response.getId(), 200);
+        }
     }
 
     @Test
@@ -44,12 +63,13 @@ public class CreateMovieTest {
     void createMovieNegative() {
         String token = authSteps.loginAsAdmin();
 
-        CreateMovieRequest request = new CreateMovieRequest();
-        request.setName("");
-        request.setPrice(200.0);
-        request.setDescription("Test movie");
-        request.setLocation("MSK");
-        request.setGenreId(1);
+        CreateMovieRequest request = CreateMovieRequest.builder()
+                .name("")
+                .price(200.0)
+                .description("Test movie")
+                .location("MSK")
+                .genreId(1)
+                .build();
 
         movieApiSteps.createMovie(token, request, 400);
     }
