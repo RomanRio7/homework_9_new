@@ -1,7 +1,6 @@
 package cinescope.db.steps;
 
 import cinescope.util.DbCredentials;
-import cinescope.util.DbName;
 import cinescope.util.DbUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -18,7 +17,7 @@ public abstract class DbBaseSteps {
     protected final Jdbi jdbi;
 
     protected DbBaseSteps() {
-        DbCredentials creds = DbUtils.loadCredentials(DbName.CINESCOPE);
+        DbCredentials creds = DbUtils.loadCredentials();
 
         String url = String.format(
                 "jdbc:postgresql://%s:%d/%s",

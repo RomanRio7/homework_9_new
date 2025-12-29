@@ -36,7 +36,7 @@ public class CreateMovieTest {
                 .genreId(1)
                 .build();
 
-        MovieResponse response = movieApiSteps.createMovie(token, request, 201);
+        MovieResponse response = movieApiSteps.createMovieSuccess(token, request);
 
         try {
             MovieDbModel dbMovie = movieDbSteps.getMovieById(response.getId());
@@ -71,6 +71,6 @@ public class CreateMovieTest {
                 .genreId(1)
                 .build();
 
-        movieApiSteps.createMovie(token, request, 400);
+        movieApiSteps.createMovieError(token, request, 400);
     }
 }

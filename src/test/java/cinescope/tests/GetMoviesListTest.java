@@ -41,12 +41,11 @@ public class GetMoviesListTest {
                         .genreId(1)
                         .build();
 
-                MovieResponse created = movieApiSteps.createMovie(token, request, 201);
+                MovieResponse created = movieApiSteps.createMovieSuccess(token, request);
                 createdIds.add(created.getId());
             }
 
-            FindAllMoviesResponse list =
-                    movieApiSteps.getMovies(token, 1, 10, 200);
+            FindAllMoviesResponse list = movieApiSteps.getMoviesSuccess(token, 1, 10);
 
             assertThat(list.getMovies())
                     .as("На первой странице должно быть ровно 10 фильмов")
@@ -59,7 +58,7 @@ public class GetMoviesListTest {
         } finally {
             for (Long id : createdIds) {
                 try {
-                    movieApiSteps.deleteMovie(token, id, 200);
+                    movieApiSteps.deleteMovie(token, id, 240);
                 } catch (AssertionError | Exception ignored) {
                 }
             }

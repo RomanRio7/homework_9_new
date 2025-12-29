@@ -37,9 +37,8 @@ public class GetMovieTest {
                     .genreId(1)
                     .build();
 
-            created = movieApiSteps.createMovie(token, request, 201);
-
-            MovieResponse got = movieApiSteps.getMovie(token, created.getId(), 200);
+            created = movieApiSteps.createMovieSuccess(token, request);
+            MovieResponse got = movieApiSteps.getMovieSuccess(token, created.getId());
 
             assertThat(got.getId()).isEqualTo(created.getId());
             assertThat(got.getName()).isEqualTo(request.getName());
@@ -58,7 +57,7 @@ public class GetMovieTest {
         } finally {
             if (created != null) {
                 try {
-                    movieApiSteps.deleteMovie(token, created.getId(), 200);
+                    movieApiSteps.deleteMovie(token, created.getId(), 204);
                 } catch (AssertionError | Exception ignored) {
                 }
             }
@@ -70,6 +69,6 @@ public class GetMovieTest {
     @DisplayName("GET /movies/{id} — несуществующий ID → 404")
     void getMovieNegative() {
         String token = authSteps.loginAsAdmin();
-        movieApiSteps.getMovie(token, 999_999_999L, 404);
+        movieApiSteps.getMovieError(token, 999_999_999L, 404);
     }
 }

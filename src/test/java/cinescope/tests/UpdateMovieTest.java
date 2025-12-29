@@ -39,7 +39,7 @@ public class UpdateMovieTest {
                     .genreId(1)
                     .build();
 
-            created = movieApiSteps.createMovie(token, request, 201);
+            created = movieApiSteps.createMovieSuccess(token, request);
 
             HashMap<String, Object> patchBody = new HashMap<>();
             String newName = "Movie updated " + System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class UpdateMovieTest {
             patchBody.put("price", 190.0);
             patchBody.put("description", "After update");
 
-            MovieResponse updated = movieApiSteps.patchMovie(token, created.getId(), patchBody, 200);
+            MovieResponse updated = movieApiSteps.patchMovieSuccess(token, created.getId(), patchBody);
 
             assertThat(updated.getId()).isEqualTo(created.getId());
             assertThat(updated.getName()).isEqualTo(newName);
@@ -62,7 +62,7 @@ public class UpdateMovieTest {
         } finally {
             if (created != null) {
                 try {
-                    movieApiSteps.deleteMovie(token, created.getId(), 200);
+                    movieApiSteps.deleteMovie(token, created.getId(), 204);
                 } catch (AssertionError | Exception ignored) {
                 }
             }
@@ -75,11 +75,11 @@ public class UpdateMovieTest {
     void updateMovieNegative() {
         String token = authSteps.loginAsAdmin();
 
-        var patchBody = new java.util.HashMap<String, Object>();
+        HashMap<String, Object> patchBody = new HashMap<>();
         patchBody.put("name", "Does not exist");
         patchBody.put("price", 100.0);
         patchBody.put("description", "no movie");
 
-        movieApiSteps.patchMovie(token, 111_111_111L, patchBody, 404);
+        movieApiSteps.patchMovieError(token, 111_111_111L, patchBody, 404);
     }
 }

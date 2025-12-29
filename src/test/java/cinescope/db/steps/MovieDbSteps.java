@@ -16,11 +16,4 @@ public class MovieDbSteps extends DbBaseSteps {
         return jdbi.withExtension(MoviesDao.class,
                 dao -> dao.findById(id));
     }
-
-    public int getMoviesCountById(long id) {
-        Allure.step("Считаем количество фильмов в БД по id=" + id);
-
-        return jdbi.withExtension(MoviesDao.class,
-                dao -> dao.countById(id));
-    }
 }

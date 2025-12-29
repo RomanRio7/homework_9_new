@@ -35,7 +35,7 @@ public class DeleteMovieTest {
                 .genreId(1)
                 .build();
 
-        MovieResponse created = movieApiSteps.createMovie(token, request, 201);
+        MovieResponse created = movieApiSteps.createMovieSuccess(token, request);
 
         movieApiSteps.deleteMovie(token, created.getId(), 200);
 
