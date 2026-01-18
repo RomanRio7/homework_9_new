@@ -1,4 +1,4 @@
-package cinescope.db.steps;
+package cinescope.steps;
 
 import cinescope.db.dao.MoviesDao;
 import cinescope.db.model.MovieDbModel;

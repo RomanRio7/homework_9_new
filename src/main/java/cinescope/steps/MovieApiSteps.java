@@ -1,4 +1,4 @@
-package cinescope.api.steps;
+package cinescope.steps;
 
 import cinescope.api.client.MovieClient;
 import cinescope.api.dto.CreateMovieRequest;

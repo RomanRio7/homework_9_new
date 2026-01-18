@@ -1,4 +1,4 @@
-package cinescope.db.steps;
+package cinescope.steps;
 
 import cinescope.util.DbCredentials;
 import cinescope.util.DbUtils;

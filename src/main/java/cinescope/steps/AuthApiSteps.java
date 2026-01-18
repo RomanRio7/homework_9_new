@@ -1,4 +1,4 @@
-package cinescope.api.steps;
+package cinescope.steps;
 
 import cinescope.api.client.AuthClient;
 import cinescope.api.dto.LoginRequest;

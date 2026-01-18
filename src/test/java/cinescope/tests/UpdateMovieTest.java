@@ -2,10 +2,10 @@ package cinescope.tests;
 
 import cinescope.api.dto.CreateMovieRequest;
 import cinescope.api.dto.MovieResponse;
-import cinescope.api.steps.AuthApiSteps;
-import cinescope.api.steps.MovieApiSteps;
+import cinescope.steps.AuthApiSteps;
+import cinescope.steps.MovieApiSteps;
 import cinescope.db.model.MovieDbModel;
-import cinescope.db.steps.MovieDbSteps;
+import cinescope.steps.MovieDbSteps;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
