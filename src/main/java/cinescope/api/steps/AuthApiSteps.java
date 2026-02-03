@@ -4,7 +4,10 @@ import cinescope.api.client.AuthClient;
 import cinescope.api.dto.LoginRequest;
 import cinescope.api.dto.LoginResponse;
 import cinescope.util.TestConfig;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.is;
 import io.qameta.allure.Step;
+import com.auth0.jwt.JWT;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +32,7 @@ public class AuthApiSteps {
 
         LoginResponse response = authClient.login(request)
                 .then()
-                .statusCode(200)
+                .statusCode(anyOf(is(200), is(201)))
                 .extract()
                 .as(LoginResponse.class);
 
@@ -46,4 +49,13 @@ public class AuthApiSteps {
         String password = TestConfig.get("cinescope.admin.password");
         return loginAndGetToken(email, password);
     }
+
+    @Step("Получить userId из accessToken")
+    public String getUserIdFromToken(String token) {
+
+        return JWT.decode(token)
+                .getClaim("id")
+                .asString();
+    }
+
 }

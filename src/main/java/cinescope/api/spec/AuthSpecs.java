@@ -6,7 +6,7 @@ import io.restassured.specification.RequestSpecification;
 
 public class AuthSpecs {
 
-    private static final String BASE_URI = "https://auth.cinescope.t-qa.ru";
+    private static final String BASE_URI = "https://auth.cinescope.krisqa.ru";
 
     public static RequestSpecification requestSpec() {
         return new RequestSpecBuilder()

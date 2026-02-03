@@ -4,7 +4,7 @@ import cinescope.api.dto.CreateMovieRequest;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
-import static cinescope.api.spec.MoviesSpecs.authRequestSpec;
+import static cinescope.api.spec.MoviesSpecs.authSpec;
 
 public class MovieClient {
 
@@ -12,7 +12,7 @@ public class MovieClient {
 
     public Response createMovie(String token, CreateMovieRequest request) {
         return given()
-                .spec(authRequestSpec(token))
+                .spec(authSpec(token))
                 .body(request)
                 .when()
                 .post(BASE_PATH);
@@ -20,14 +20,14 @@ public class MovieClient {
 
     public Response getMovie(String token, long id) {
         return given()
-                .spec(authRequestSpec(token))
+                .spec(authSpec(token))
                 .when()
                 .get(BASE_PATH + "/{id}", id);
     }
 
     public Response getMovies(String token, int page, int pageSize) {
         return given()
-                .spec(authRequestSpec(token))
+                .spec(authSpec(token))
                 .queryParam("page", page)
                 .queryParam("pageSize", pageSize)
                 .when()
@@ -36,7 +36,7 @@ public class MovieClient {
 
     public Response patchMovie(String token, long id, Object patchBody) {
         return given()
-                .spec(authRequestSpec(token))
+                .spec(authSpec(token))
                 .body(patchBody)
                 .when()
                 .patch(BASE_PATH + "/{id}", id);
@@ -44,7 +44,7 @@ public class MovieClient {
 
     public Response deleteMovie(String token, long id) {
         return given()
-                .spec(authRequestSpec(token))
+                .spec(authSpec(token))
                 .when()
                 .delete(BASE_PATH + "/{id}", id);
     }

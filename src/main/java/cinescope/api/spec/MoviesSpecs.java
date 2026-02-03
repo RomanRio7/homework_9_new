@@ -7,14 +7,22 @@ import io.restassured.specification.RequestSpecification;
 
 public class MoviesSpecs {
 
-    private static final String BASE_URI = "https://api.cinescope.t-qa.ru";
+    private static final String BASE_URI = "https://api.cinescope.krisqa.ru";
 
-    public static RequestSpecification authRequestSpec(String token) {
+    // обычная спека без токена
+    public static RequestSpecification requestSpec() {
         return new RequestSpecBuilder()
                 .setBaseUri(BASE_URI)
                 .setContentType(ContentType.JSON)
-                .addHeader("Authorization", "Bearer " + token)
                 .log(LogDetail.ALL)
+                .build();
+    }
+
+    // спека с авторизацией
+    public static RequestSpecification authSpec(String token) {
+        return new RequestSpecBuilder()
+                .addRequestSpecification(requestSpec())
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
     }
 }
